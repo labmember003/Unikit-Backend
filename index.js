@@ -4,11 +4,13 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const userRouter = require("./routes/userRouter");
+const collegeRouter = require("./routes/collegeRouter");
 
 dotenv.config();
 app.use(express.json());
 
 app.use("/users", userRouter);
+app.use("/college", collegeRouter);
 
 app.get("/", (req, res) => {
     // middleware call he 3 paramenter ke saath hote hai first req, second res, third next (naam se kuch nhi hai, positional hai)

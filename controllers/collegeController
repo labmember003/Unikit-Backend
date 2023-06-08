@@ -1,0 +1,33 @@
+const collegeModel = require("../models/college");
+
+const getCollege = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const college = await collegeModel.findByIdAndDelete(id); 
+        res.status(202).json(note);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Something went wrong"});
+    }
+}
+
+const putCollege = async (req, res) => {
+    const {collegeName, collegeId} = req.body;
+
+    const newCollege = new collegeModel({
+        collegeName: collegeName,
+        collegeId: collegeId
+    });
+    try {
+        await newCollege.save();
+        res.status(201).json(newCollege);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Something went wrong"});
+    }
+}
+
+module.exports = {
+    getCollege,
+    putCollege
+}
