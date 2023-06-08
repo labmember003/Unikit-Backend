@@ -1,10 +1,11 @@
 const express = require("express");
 const { putCollege } = require("../controllers/collegeController");
 const { getCollege } = require("../controllers/collegeController");
+const auth = require("../middlewares/auth");
 
-const userRouter = express.Router();
+const collegeRouter = express.Router();
 
-userRouter.get("/:id", auth, getCollege);
-userRouter.post("/", auth, putCollege);
+collegeRouter.get("/:id", auth, getCollege);
+collegeRouter.post("/", auth, putCollege);
 
-module.exports = userRouter;
+module.exports = collegeRouter;

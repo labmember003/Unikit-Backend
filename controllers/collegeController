@@ -4,7 +4,7 @@ const getCollege = async (req, res) => {
     const id = req.params.id;
     try {
         const college = await collegeModel.findByIdAndDelete(id); 
-        res.status(202).json(note);
+        res.status(202).json(college);
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Something went wrong"});
