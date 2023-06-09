@@ -1,9 +1,9 @@
 const collegeModel = require("../models/college");
 
 const getCollege = async (req, res) => {
-    const id = req.params.id;
+    const collegeId = req.params.id;
     try {
-        const college = await collegeModel.findByIdAndDelete(id); 
+        const college = await collegeModel.findOne({collegeId: collegeId}); 
         res.status(202).json(college);
     } catch (error) {
         console.log(error);
