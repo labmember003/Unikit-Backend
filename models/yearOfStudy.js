@@ -1,0 +1,10 @@
+const mongoose = require("mongoose");
+const Branch = require("./branch");
+const yearOfStudySchema = mongoose.Schema({
+    numberOfYears: {
+      type: Number,
+      required: true,
+    },
+    branchList: [Branch.Schema]
+});
+module.exports = mongoose.model("YearOfStudy", yearOfStudySchema);
