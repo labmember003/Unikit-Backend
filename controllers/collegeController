@@ -12,11 +12,12 @@ const getCollege = async (req, res) => {
 }
 
 const putCollege = async (req, res) => {
-    const {collegeName, collegeId} = req.body;
+    const {collegeName, collegeId, courses} = req.body;
 
     const newCollege = new collegeModel({
         collegeName: collegeName,
-        collegeId: collegeId
+        collegeId: collegeId,
+        courses: courses
     });
     try {
         await newCollege.save();
