@@ -5,6 +5,6 @@ const yearOfStudySchema = mongoose.Schema({
       type: Number,
       required: true,
     },
-    branchList: [Branch.Schema]
+    branchList: [Branch.schema]
 });
 module.exports = mongoose.model("YearOfStudy", yearOfStudySchema);

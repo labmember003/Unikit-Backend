@@ -5,6 +5,6 @@ const courseSchema = mongoose.Schema({
       type: String,
       required: true,
     },
-    yearsOfStudy: [YearOfStudy.Schema]
+    yearsOfStudy: [YearOfStudy.schema]
 });
 module.exports = mongoose.model("Course", courseSchema);

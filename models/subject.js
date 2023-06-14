@@ -6,7 +6,7 @@ const subjectSchema = mongoose.Schema({
       type: String,
       required: true,
     },
-    notesList: [Notes.Schema],
-    bookList: [Book.Schema]
+    notesList: [Notes.schema],
+    bookList: [Book.schema]
 });
 module.exports = mongoose.model("Subject", subjectSchema);

@@ -5,6 +5,6 @@ const branchSchema = mongoose.Schema({
       type: String,
       required: true,
     },
-    subjectList: [Subject.Schema]
+    subjectList: [Subject.schema]
 });
 module.exports = mongoose.model("Branch", branchSchema);
