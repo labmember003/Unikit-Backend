@@ -5,4 +5,4 @@ const syllabusSchema = mongoose.Schema({
       required: true,
     }
 });
-module.exports = mongoose.model("Notes", syllabusSchema);
+module.exports = mongoose.model("Syllabus", syllabusSchema);

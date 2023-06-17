@@ -5,4 +5,4 @@ const playListSchema = mongoose.Schema({
       required: true,
     }
 });
-module.exports = mongoose.model("Notes", playListSchema);
+module.exports = mongoose.model("Playlist", playListSchema);
