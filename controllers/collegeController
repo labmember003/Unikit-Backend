@@ -1,4 +1,8 @@
-const collegeModel = require("../models/college");
+const { default: mongoose } = require("mongoose");
+const College = require('../models/college');
+const Course = require('../models/courseSchema');
+const Branch = require('../models/branch');
+const Subject = require('../models/subject');
 
 const getCollege = async (req, res) => {
     const collegeId = req.params.id;
@@ -28,7 +32,62 @@ const putCollege = async (req, res) => {
     }
 }
 
+const getListOfColleges = async (req, res) => {
+    try {
+      const colleges = await College.find();
+      res.json(colleges);
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+
+  const getDataBasedOnQuery = async (req, res) => {
+    try {
+        const {
+            collegeId,
+            courseId,
+            numofYear,
+            branchId
+        } = req.query;
+        //const numofYear =query.courseId.slice(-1);
+        //const courseId = query.courseId.slice(0,query.courseId.length-1);
+        let query = {};
+
+        if (collegeId) {
+            query.collegeId = collegeId;
+        }
+
+        if (courseId) {
+          query.courseId = courseId;
+        }
+
+        if (branchId) {
+            query.branchId = branchId;
+        }
+
+        const results = {};
+
+        if (collegeId) {
+            results.college = await Course.find({ courseID: { $regex: `^${collegeId}`, $options: 'i' } });
+        }
+
+        if (courseId) {
+            results.course = await Branch.find({ branchID: { $regex: `^${courseId}`, $options: 'i' } });
+        }
+
+        if (branchId) {
+            results.branch = await Subject.find({ subjectID: { $regex: `^${branchId}`, $options: 'i' } });
+        }
+
+        res.json(results);
+    } catch (error) {
+
+        res.status(500).json({ error: 'An error occurred' });
+    }
+};
+
 module.exports = {
-    getCollege,
-    putCollege
-}
+  getListOfColleges,
+    getDataBasedOnQuery
+};
