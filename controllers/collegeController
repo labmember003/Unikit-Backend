@@ -74,19 +74,19 @@ const getListOfColleges = async (req, res) => {
         const results = {};
 
         if (collegeId) {
-            results.college = await Course.find({ courseID: { $regex: `^${collegeId}`, $options: 'i' } });
-        }
-
-        if (year) {
-            results.course = await Branch.find({ branchID: { $regex: `^${courseId+year}`, $options: 'i' } });
+            results= await Course.find({ courseID: { $regex: `^${collegeId}`, $options: 'i' } });
         }
 
         if (courseId) {
-            results.years = await numofYears.find({ yearID: { $regex: `^${courseId}`, $options: 'i' }});
+            results = await numofYears.find({ yearID: { $regex: `^${courseId}`, $options: 'i' }});
+        }
+
+        if (year) {
+            results = await Branch.find({ branchID: { $regex: `^${courseId+year}`, $options: 'i' } });
         }
 
         if (branchId) {
-            results.branch = await Subject.find({ subjectID: { $regex: `^${branchId}`, $options: 'i' } });
+            results = await Subject.find({ subjectID: { $regex: `^${branchId}`, $options: 'i' } });
         }
 
         res.json(results);
