@@ -2,10 +2,11 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const cors = require("cors");
+const mongourl = require("./config")
 const userRouter = require("./routes/userRouter");
 const collegeRouter = require("./routes/collegeRouter");
 const multer = require("multer");
+ 
 
 
 dotenv.config();
@@ -21,6 +22,9 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+
+
 app.use("/users", userRouter);
 app.use("/college", collegeRouter);
 app.get("/", (req, res) => {
@@ -29,7 +33,7 @@ app.get("/", (req, res) => {
 
 const port = process.env.PORT || 3000;
 
-mongoose.connect('mongodb://localhost/mydatabase', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongourl, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => {
     app.listen(port, () => {
         console.log(`Server running on ${port}, http://localhost:${port}`)}
