@@ -3,6 +3,7 @@ const College = require('../models/college');
 const Course = require('../models/courseSchema');
 const Branch = require('../models/branch');
 const Subject = require('../models/subject');
+const numofYears = require("../models/numofYears");
 
 const getCollege = async (req, res) => {
     const collegeId = req.params.id;
@@ -47,7 +48,7 @@ const getListOfColleges = async (req, res) => {
         const {
             collegeId,
             courseId,
-            numofYear,
+            year,
             branchId
         } = req.query;
         //const numofYear =query.courseId.slice(-1);
@@ -62,6 +63,10 @@ const getListOfColleges = async (req, res) => {
           query.courseId = courseId;
         }
 
+        if (year) {
+            query.year = year;
+          }
+
         if (branchId) {
             query.branchId = branchId;
         }
@@ -72,8 +77,12 @@ const getListOfColleges = async (req, res) => {
             results.college = await Course.find({ courseID: { $regex: `^${collegeId}`, $options: 'i' } });
         }
 
+        if (year) {
+            results.course = await Branch.find({ branchID: { $regex: `^${courseId+year}`, $options: 'i' } });
+        }
+
         if (courseId) {
-            results.course = await Branch.find({ branchID: { $regex: `^${courseId}`, $options: 'i' } });
+            results.years = await numofYears.find({ yearID: { $regex: `^${courseId}`, $options: 'i' }});
         }
 
         if (branchId) {
@@ -82,6 +91,7 @@ const getListOfColleges = async (req, res) => {
 
         res.json(results);
     } catch (error) {
+        console.log(error)
 
         res.status(500).json({ error: 'An error occurred' });
     }
