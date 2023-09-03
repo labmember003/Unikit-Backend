@@ -71,7 +71,7 @@ const getListOfColleges = async (req, res) => {
             query.branchId = branchId;
         }
 
-        const results = {};
+        let results = {};
 
         if (collegeId) {
             results= await Course.find({ courseID: { $regex: `^${collegeId}`, $options: 'i' } });
