@@ -5,7 +5,7 @@ const numofYears = mongoose.Schema({
       required: true,
     },
     numofYear: {
-      type: Number,
+      type: String,
       required: true,
     }
     
