@@ -82,7 +82,7 @@ const getListOfColleges = async (req, res) => {
         }
 
         if (year) {
-            results = await Branch.find({ branchID: { $regex: `^${courseId+year}`, $options: 'i' } });
+            results = await Branch.find({ branchID: { $regex: `^${year}`, $options: 'i' } });
         }
 
         if (branchId) {
