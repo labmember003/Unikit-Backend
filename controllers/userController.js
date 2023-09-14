@@ -57,16 +57,13 @@ const signin = async (req, res) => {
 
 
 const googleOneTap = (req, res, next) => {
-    passport.authenticate('google', { failureRedirect: '/signup' }, async (err, user) => {
+    passport.authenticate('google', { failureRedirect: '/signup' }), async (err, user) => {
         if (err) {
             console.error('Google authentication error:', err);
             return res.status(401).json({ error: 'Unauthorized' });
         }
-        if (!user) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
         try {
-            const googleToken = user.id;
+            const googleToken = req.body.googleToken;
             const clientId = "Google Oauth client_id";
             const client = new OAuth2Client(clientId);
             const ticket = await client.verifyIdToken({
@@ -85,8 +82,8 @@ const googleOneTap = (req, res, next) => {
             console.error('Google token verification failed:', error);
             res.status(401).json({ error: 'Unauthorized' });
         }
-    })(req, res, next); 
-};
+    }
+}
 
 
 
