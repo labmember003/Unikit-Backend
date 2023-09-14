@@ -70,12 +70,17 @@ const googleOneTap = (req, res, next) => {
                 idToken: googleToken,
                 audience: clientId,
             });
+
             const payload = ticket.getPayload();
+            const email = payload.email;
             const jwtToken = jwt.sign(payload, SECRET_KEY);
-            const result = await userModel.create({
-                username: profile,
-                email: email
-            });
+            const existingUser = await userModel.findOne({ email: email });
+                if (!existingUser) {
+                    const result = await userModel.create({
+                        username: payload.name,
+                        email: email
+                    });
+                }
             const token = jwt.sign({ email: result.email, id: result._id }, SECRET_KEY);
             res.status(201).json({ user: result, token: jwtToken });
         } catch (error) {
