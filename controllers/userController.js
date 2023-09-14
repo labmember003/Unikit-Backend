@@ -2,16 +2,16 @@ const userModel = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = "NOTESAPI";
+const { OAuth2Client } = require('google-auth-library');
+
 
 const signup = async (req, res) => {
-    const {username, email, password} = req.body;
+    const { username, email, password } = req.body;
     try {
-        const existingUser = await userModel.findOne({email: email});
-        // model pe hai yeh findOne function just like functions on DAO
-        // existingUser mei ya tho null ya tho data hoga
+        const existingUser = await userModel.findOne({ email: email });
         if (existingUser) {
             return res.status(400).json({
-                message : "User already exists"
+                message: "User already exists"
             });
         }
         const hashedpassword = await bcrypt.hash(password, 10);
@@ -20,8 +20,8 @@ const signup = async (req, res) => {
             email: email,
             password: hashedpassword
         });
-        const token = jwt.sign({email: result.email, id: result._id}, SECRET_KEY);
-        res.status(201).json({user: result, token: token});
+        const token = jwt.sign({ email: result.email, id: result._id }, SECRET_KEY);
+        res.status(201).json({ user: result, token: token });
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -31,20 +31,20 @@ const signup = async (req, res) => {
 }
 
 const signin = async (req, res) => {
-    const {email, password} = req.body;
+    const { email, password } = req.body;
     try {
-        const existingUser = await userModel.findOne({email: email});
+        const existingUser = await userModel.findOne({ email: email });
         if (!existingUser) {
             return res.status(400).json({
-                message : "User Not Found"
+                message: "User Not Found"
             });
         }
         const matchPassword = await bcrypt.compare(password, existingUser.password);
         if (!matchPassword) {
-            return res.status(400).json({message : "Invalid Credentials"});
+            return res.status(400).json({ message: "Invalid Credentials" });
         }
-        const token = jwt.sign({email: existingUser.email, id: existingUser._id}, SECRET_KEY);
-        res.status(200).json({user: existingUser, token: token});
+        const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, SECRET_KEY);
+        res.status(200).json({ user: existingUser, token: token });
 
     }
     catch (error) {
@@ -54,6 +54,42 @@ const signin = async (req, res) => {
         })
     }
 }
-module.exports = {signup, signin}
+
+
+const googleOneTap = (req, res, next) => {
+    passport.authenticate('google', { failureRedirect: '/signup' }, async (err, user) => {
+        if (err) {
+            console.error('Google authentication error:', err);
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        try {
+            const googleToken = user.id;
+            const clientId = "Google Oauth client_id";
+            const client = new OAuth2Client(clientId);
+            const ticket = await client.verifyIdToken({
+                idToken: googleToken,
+                audience: clientId,
+            });
+            const payload = ticket.getPayload();
+            const jwtToken = jwt.sign(payload, SECRET_KEY);
+            const result = await userModel.create({
+                username: profile,
+                email: email
+            });
+            const token = jwt.sign({ email: result.email, id: result._id }, SECRET_KEY);
+            res.status(201).json({ user: result, token: jwtToken });
+        } catch (error) {
+            console.error('Google token verification failed:', error);
+            res.status(401).json({ error: 'Unauthorized' });
+        }
+    })(req, res, next); 
+};
+
+
+
+module.exports = { signup, signin, googleOneTap }
 
 // 11:05
