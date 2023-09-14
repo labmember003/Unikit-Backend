@@ -85,13 +85,11 @@ const googleOneTap = (req, res, next) => {
           });
         }
 
-        res
-          .status(201)
-          .json({
-            user: existingUser.email,
-            id: existingUser._id,
-            token: jwtToken,
-          });
+        res.status(201).json({
+          user: existingUser.email,
+          id: existingUser._id,
+          token: jwtToken,
+        });
       } catch (error) {
         console.error("Google token verification failed:", error);
         res.status(401).json({ error: "Unauthorized" });
