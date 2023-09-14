@@ -1,103 +1,92 @@
-const { default: mongoose } = require("mongoose");
-const College = require('../models/college');
-const Course = require('../models/courseSchema');
-const Branch = require('../models/branch');
-const Subject = require('../models/subject');
-const numofYears = require("../models/numofYears");
+const userModel = require("../models/user");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const SECRET_KEY = "NOTESAPI";
+const { OAuth2Client } = require('google-auth-library');
 
-const getCollege = async (req, res) => {
-    const collegeId = req.params.id;
+
+const signup = async (req, res) => {
+    const { username, email, password } = req.body;
     try {
-        const college = await collegeModel.findOne({collegeId: collegeId}); 
-        res.status(202).json(college);
+        const existingUser = await userModel.findOne({ email: email });
+        if (existingUser) {
+            return res.status(400).json({
+                message: "User already exists"
+            });
+        }
+        const hashedpassword = await bcrypt.hash(password, 10);
+        const result = await userModel.create({
+            username: username,
+            email: email,
+            password: hashedpassword
+        });
+        const token = jwt.sign({ email: result.email, id: result._id }, SECRET_KEY);
+        res.status(201).json({ user: result, token: token });
     } catch (error) {
         console.log(error);
-        res.status(500).json({message: "Something went wrong"});
+        res.status(500).json({
+            message: "Something went wrong"
+        })
     }
 }
 
-const putCollege = async (req, res) => {
-    const {collegeName, collegeId, courses} = req.body;
-
-    const newCollege = new collegeModel({
-        collegeName: collegeName,
-        collegeId: collegeId,
-        courses: courses
-    });
+const signin = async (req, res) => {
+    const { email, password } = req.body;
     try {
-        await newCollege.save();
-        res.status(201).json(newCollege);
-    } catch (error) {
+        const existingUser = await userModel.findOne({ email: email });
+        if (!existingUser) {
+            return res.status(400).json({
+                message: "User Not Found"
+            });
+        }
+        const matchPassword = await bcrypt.compare(password, existingUser.password);
+        if (!matchPassword) {
+            return res.status(400).json({ message: "Invalid Credentials" });
+        }
+        const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, SECRET_KEY);
+        res.status(200).json({ user: existingUser, token: token });
+
+    }
+    catch (error) {
         console.log(error);
-        res.status(500).json({message: "Something went wrong"});
+        res.status(500).json({
+            message: "Something went wrong"
+        })
     }
 }
 
-const getListOfColleges = async (req, res) => {
-    try {
-      const colleges = await College.find();
-      res.json(colleges);
-    } catch (error) {
-      console.log(error)
-      res.status(500).json({ message: 'Internal server error' });
+
+const googleOneTap = (req, res, next) => {
+    passport.authenticate('google', { failureRedirect: '/signup' }), async (err, user) => {
+        if (err) {
+            console.error('Google authentication error:', err);
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        try {
+            const googleToken = req.body.googleToken;
+            const clientId = "Google Oauth client_id";
+            const client = new OAuth2Client(clientId);
+            const ticket = await client.verifyIdToken({
+                idToken: googleToken,
+                audience: clientId,
+            });
+            const payload = ticket.getPayload();
+            const jwtToken = jwt.sign(payload, SECRET_KEY);
+            const result = await userModel.create({
+                username: profile,
+                email: email
+            });
+            const token = jwt.sign({ email: result.email, id: result._id }, SECRET_KEY);
+            res.status(201).json({ user: result, token: jwtToken });
+        } catch (error) {
+            console.error('Google token verification failed:', error);
+            res.status(401).json({ error: 'Unauthorized' });
+        }
     }
-  }
+}
 
-  const getDataBasedOnQuery = async (req, res) => {
-    try {
-        const {
-            collegeId,
-            courseId,
-            year,
-            branchId
-        } = req.query;
-        //const numofYear =query.courseId.slice(-1);
-        //const courseId = query.courseId.slice(0,query.courseId.length-1);
-        let query = {};
 
-        if (collegeId) {
-            query.collegeId = collegeId;
-        }
 
-        if (courseId) {
-          query.courseId = courseId;
-        }
+module.exports = { signup, signin, googleOneTap }
 
-        if (year) {
-            query.year = year;
-          }
-
-        if (branchId) {
-            query.branchId = branchId;
-        }
-
-        let results = {};
-
-        if (collegeId) {
-            results= await Course.find({ courseID: { $regex: `^${collegeId}`, $options: 'i' } });
-        }
-
-        if (courseId) {
-            results = await numofYears.find({ yearID: { $regex: `^${courseId}`, $options: 'i' }});
-        }
-
-        if (year) {
-            results = await Branch.find({ branchID: { $regex: `^${year}`, $options: 'i' } });
-        }
-
-        if (branchId) {
-            results = await Subject.find({ subjectID: { $regex: `^${branchId}`, $options: 'i' } });
-        }
-
-        res.json(results);
-    } catch (error) {
-        console.log(error)
-
-        res.status(500).json({ error: 'An error occurred' });
-    }
-};
-
-module.exports = {
-  getListOfColleges,
-    getDataBasedOnQuery
-};
+// 11:05
