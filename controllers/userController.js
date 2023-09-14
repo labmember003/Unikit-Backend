@@ -55,13 +55,7 @@ const signin = async (req, res) => {
   }
 };
 
-const googleOneTap = (req, res, next) => {
-  passport.authenticate("google", { failureRedirect: "/signup" }),
-    async (err, user) => {
-      if (err) {
-        console.error("Google authentication error:", err);
-        return res.status(401).json({ error: "Unauthorized" });
-      }
+const googleOneTap = (req, res) => {
       try {
         const googleToken = req.body.googleToken;
         const clientId = "Google Oauth client_id";
