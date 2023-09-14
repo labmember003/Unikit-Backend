@@ -2,6 +2,7 @@ const userModel = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = "NOTESAPI";
+const passport = require("passport");
 const { OAuth2Client } = require("google-auth-library");
 
 const signup = async (req, res) => {
