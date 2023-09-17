@@ -82,6 +82,7 @@ const googleOneTap = async (req, res) => {
       existingUser = await userModel.create({
         username: payload.name,
         email: email,
+        token: jwtToken
       });
     }
 
