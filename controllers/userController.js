@@ -56,8 +56,15 @@ const signin = async (req, res) => {
   }
 };
 
-const lander = (req, res) => {
-  res.json({"hello":"hi"})
+const myNotes = async (req, res) => {
+  try {
+    userid = req.userid;
+    const myNotes = await notes.find({author: userid});
+    res.json(myNotes);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Internal server error' });
+  }
 }
 
 
@@ -82,13 +89,15 @@ const googleOneTap = async (req, res) => {
       existingUser = await userModel.create({
         username: payload.name,
         email: email,
+        img: payload.picture,
         token: jwtToken
       });
     }
 
     res.status(201).json({
-      user: existingUser.email,
-      id: existingUser._id,
+      user: existingUser.name,
+      email: existingUser.email,
+      img: existingUser.img,
       token: jwtToken,
     });
   } catch (error) {
@@ -97,8 +106,6 @@ const googleOneTap = async (req, res) => {
   }
 };
 
-
-
-module.exports = { signup, signin, googleOneTap, lander };
+module.exports = { signup, signin, googleOneTap, myNotes };
 
 // 11:05
