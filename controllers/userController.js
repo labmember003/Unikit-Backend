@@ -2,7 +2,7 @@ const userModel = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = "NOTESAPI";
-const passport = require("passport");
+const passport = require("passport")
 const { OAuth2Client } = require("google-auth-library");
 
 const signup = async (req, res) => {
@@ -56,6 +56,11 @@ const signin = async (req, res) => {
   }
 };
 
+const lander = (req, res) => {
+  res.json({"hello":"hi"})
+}
+
+
 const googleOneTap = async (req, res) => {
   passport.authenticate("google", { failureRedirect: "/signup" });
   try {
@@ -65,12 +70,12 @@ const googleOneTap = async (req, res) => {
     const client = new OAuth2Client(clientId);
     const ticket = await client.verifyIdToken({
       idToken: googleToken,
-      audience: clientId,
+      audience: clientId ,
     });
 
     const payload = ticket.getPayload();
     const email = payload.email;
-    const jwtToken = jwt.sign({ user: email, id: payload.name }, process.env.SECRET_KEY); // Use environment variable
+    const jwtToken = jwt.sign({ user: email, id: payload.name }, SECRET_KEY); // Use environment variable
 
     let existingUser = await userModel.findOne({ email: email });
     if (!existingUser) {
@@ -93,6 +98,6 @@ const googleOneTap = async (req, res) => {
 
 
 
-module.exports = { signup, signin, googleOneTap };
+module.exports = { signup, signin, googleOneTap, lander };
 
 // 11:05
