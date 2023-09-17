@@ -56,42 +56,42 @@ const signin = async (req, res) => {
   }
 };
 
-const googleOneTap = (req, res) => {
-      try {
-        const googleToken = req.body.googleToken;
-        const clientId = "Google Oauth client_id";
-        const client = new OAuth2Client(clientId);
-        const ticket = await client.verifyIdToken({
-          idToken: googleToken,
-          audience: clientId,
-        });
+const googleOneTap = async (req, res) => {
+  passport.authenticate("google", { failureRedirect: "/signup" });
+  try {
+    const googleToken = req.body.googleToken;
+    console.log("Received googleToken:", googleToken);
+    const clientId = process.env.GOOGLE_CLIENT_ID; // Use environment variable
+    const client = new OAuth2Client(clientId);
+    const ticket = await client.verifyIdToken({
+      idToken: googleToken,
+      audience: clientId,
+    });
 
-        const payload = ticket.getPayload();
-        const email = payload.email;
-        const jwtToken = jwt.sign(
-          { user: email, id: payload.name },
-          SECRET_KEY
-        );
-        let existingUser = await userModel.findOne({ email: email });
-        if (!existingUser) {
-          let existingUser = await userModel.create({
-            username: payload.name,
-            email: email,
-          });
-        }
+    const payload = ticket.getPayload();
+    const email = payload.email;
+    const jwtToken = jwt.sign({ user: email, id: payload.name }, process.env.SECRET_KEY); // Use environment variable
 
-        res.status(201).json({
-          user: existingUser.email,
-          id: existingUser._id,
-          token: jwtToken,
-        });
-        console.log("Google Authntication successful")
-      } catch (error) {
-        console.error("Google token verification failed:", error);
-        res.status(401).json({ error: "Unauthorized" });
-      }
-    };
+    let existingUser = await userModel.findOne({ email: email });
+    if (!existingUser) {
+      existingUser = await userModel.create({
+        username: payload.name,
+        email: email,
+      });
+    }
+
+    res.status(201).json({
+      user: existingUser.email,
+      id: existingUser._id,
+      token: jwtToken,
+    });
+  } catch (error) {
+    console.error("Google token verification failed:", error);
+    res.status(401).json({ error: "Unauthorized" });
+  }
 };
+
+
 
 module.exports = { signup, signin, googleOneTap };
 
