@@ -59,14 +59,13 @@ const signin = async (req, res) => {
 const myNotes = async (req, res) => {
   try {
     userid = req.userid;
-    const myNotes = await notes.find({author: userid});
-    res.json(myNotes);
+    const mynotes = await notes.find({author: userid});
+    res.json(mynotes);
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: 'Internal server error' });
   }
 }
-
 
 const googleOneTap = async (req, res) => {
   passport.authenticate("google", { failureRedirect: "/signup" });
