@@ -73,7 +73,7 @@ const googleOneTap = async (req, res) => {
   try {
     const googleToken = req.body.googleToken;
     console.log("Received googleToken:", googleToken);
-    const clientId = process.env.GOOGLE_CLIENT_ID; // Use environment variable
+    const clientId = process.env.GOOGLE_CLIENT_ID;
     const client = new OAuth2Client(clientId);
     const ticket = await client.verifyIdToken({
       idToken: googleToken,
@@ -84,7 +84,7 @@ const googleOneTap = async (req, res) => {
     const email = payload.email;
     const jwtToken = jwt.sign({ user: email, id: payload.name }, SECRET_KEY); // Use environment variable
 
-    let existingUser = await userModel.findOne({ email: email });
+    let existingUser = await userModel.findOneAndUpdate({ email: email }, {token: jwtToken});
     if (!existingUser) {
       existingUser = await userModel.create({
         username: payload.name,
