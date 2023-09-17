@@ -85,6 +85,7 @@ const googleOneTap = (req, res) => {
           id: existingUser._id,
           token: jwtToken,
         });
+        console.log("Google Authntication successful")
       } catch (error) {
         console.error("Google token verification failed:", error);
         res.status(401).json({ error: "Unauthorized" });
