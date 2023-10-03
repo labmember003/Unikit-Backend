@@ -60,7 +60,18 @@ const myNotes = async (req, res) => {
   try {
     token = req.token;
     const mynotes = await notes.find({author: token});
-    res.json(mynotes);
+    collegeid = mynotes.notesID.replace(/[^a-zA-Z]/g, '')
+    courseid= mynotes.notesID.slice(0,length(collegeid)+3)
+    yearid = mynotes.notesID.slice(0,length(courseid)+1)
+    branchid = mynotes.notesID.slice(0,length(yearid)+3)
+    res.json({
+      notesName: mynotes.notesName,
+      pdf: mynotes.pdfFile,
+      college: await College.find({collegeID: collegeid}),
+      course: await Course.find({ courseID:courseid}),
+      branch: await Branch.find({ branchID:branchid}),
+      year: await numofYears.find({ yearID:yearid})
+  });
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: 'Internal server error' });
