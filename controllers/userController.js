@@ -15,14 +15,12 @@ const signup = async (req, res) => {
       });
     }
     const hashedpassword = await bcrypt.hash(password, 10);
-    const token = jwt.sign({ email: result.email, id: result._id }, SECRET_KEY);
     const result = await userModel.create({
       username: username,
       email: email,
       password: hashedpassword,
-      token: token
     });
-    
+    const token = jwt.sign({ email: result.email, id: result._id }, SECRET_KEY);
     res.status(201).json({ user: result, token: token });
   } catch (error) {
     console.log(error);
@@ -69,18 +67,17 @@ const myNotes = async (req, res) => {
   }
 }
 
+
 const googleOneTap = async (req, res) => {
   passport.authenticate("google", { failureRedirect: "/signup" });
   try {
     const googleToken = req.body.googleToken;
-    console.log("Received googleToken:", googleToken);
-    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientId = process.env.GOOGLE_CLIENT_ID; // Use environment variable
     const client = new OAuth2Client(clientId);
     const ticket = await client.verifyIdToken({
       idToken: googleToken,
       audience: clientId ,
     });
-
     const payload = ticket.getPayload();
     const email = payload.email;
     const jwtToken = jwt.sign({ user: email, id: payload.name }, SECRET_KEY); // Use environment variable
@@ -94,9 +91,8 @@ const googleOneTap = async (req, res) => {
         token: jwtToken
       });
     }
-
     res.status(201).json({
-      user: existingUser.name,
+      user: existingUser.username,
       email: existingUser.email,
       img: existingUser.img,
       token: jwtToken,
@@ -106,6 +102,8 @@ const googleOneTap = async (req, res) => {
     res.status(401).json({ error: "Unauthorized" });
   }
 };
+
+
 
 module.exports = { signup, signin, googleOneTap, myNotes };
 
