@@ -58,8 +58,8 @@ const signin = async (req, res) => {
 
 const myNotes = async (req, res) => {
   try {
-    userid = req.userid;
-    const mynotes = await notes.find({author: userid});
+    token = req.token;
+    const mynotes = await notes.find({author: token});
     res.json(mynotes);
   } catch (error) {
     console.log(error)
@@ -80,10 +80,11 @@ const googleOneTap = async (req, res) => {
     });
     const payload = ticket.getPayload();
     const email = payload.email;
-    const jwtToken = jwt.sign({ user: email, id: payload.name }, SECRET_KEY); // Use environment variable
+    // Use environment variable
 
     let existingUser = await userModel.findOne({ email: email });
     if (!existingUser) {
+      const jwtToken = jwt.sign({ user: email, id: payload.name }, SECRET_KEY); 
       existingUser = await userModel.create({
         username: payload.name,
         email: email,
@@ -95,7 +96,7 @@ const googleOneTap = async (req, res) => {
       user: existingUser.username,
       email: existingUser.email,
       img: existingUser.img,
-      token: jwtToken,
+      token: existingUser.token,
     });
   } catch (error) {
     console.error("Google token verification failed:", error);
