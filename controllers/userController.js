@@ -82,7 +82,7 @@ const googleOneTap = async (req, res) => {
     const email = payload.email;
     const jwtToken = jwt.sign({ user: email, id: payload.name }, SECRET_KEY); // Use environment variable
 
-    let existingUser = await userModel.findOneAndUpdate({ email: email }, {token: jwtToken});
+    let existingUser = await userModel.findOne({ email: email });
     if (!existingUser) {
       existingUser = await userModel.create({
         username: payload.name,
