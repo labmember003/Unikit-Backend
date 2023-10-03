@@ -1,9 +1,16 @@
 const userModel = require("../models/user");
+const notes = require("../models/notes");
 const bcrypt = require("bcrypt");
+const College = require('../models/college');
+const Course = require('../models/courseSchema');
+const Branch = require('../models/branch');
+const Subject = require('../models/subject');
+const numofYears = require("../models/numofYears");
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = "NOTESAPI";
 const passport = require("passport")
 const { OAuth2Client } = require("google-auth-library");
+const subject = require("../models/subject");
 
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
@@ -58,20 +65,31 @@ const signin = async (req, res) => {
 
 const myNotes = async (req, res) => {
   try {
-    token = req.token;
+    token = req.body.token;
     const mynotes = await notes.find({author: token});
-    collegeid = mynotes.notesID.replace(/[^a-zA-Z]/g, '')
-    courseid= mynotes.notesID.slice(0,length(collegeid)+3)
-    yearid = mynotes.notesID.slice(0,length(courseid)+1)
-    branchid = mynotes.notesID.slice(0,length(yearid)+3)
-    res.json({
-      notesName: mynotes.notesName,
-      pdf: mynotes.pdfFile,
+    let i = 0;
+    result=[];
+    while (i < mynotes.length) {
+    notesid= String(mynotes[i].notesID)
+    collegeid = notesid.replace(/[^a-zA-Z]/g, '')
+    courseid= notesid.slice(0,collegeid.length+3)
+    yearid = notesid.slice(0,courseid.length+1)
+    branchid = notesid.slice(0,yearid.length+3)
+    subjectid= notesid.slice(0,branchid.length+3)
+    result.push({
+      notesName: mynotes[i].notesName,
+      pdf: mynotes[i].pdfFile,
       college: await College.find({collegeID: collegeid}),
       course: await Course.find({ courseID:courseid}),
       branch: await Branch.find({ branchID:branchid}),
-      year: await numofYears.find({ yearID:yearid})
-  });
+      year: await numofYears.find({ yearID:yearid}),
+      subject: await Subject.find({ subjectID:subjectid})
+  })
+    
+    i++;
+}
+    
+    res.json(result);
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: 'Internal server error' });
