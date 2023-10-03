@@ -1,12 +1,20 @@
 const mongoose = require("mongoose");
 const notesSchema = mongoose.Schema({
-    NotesName: {
+    notesName: {
       type: String,
       required: true,
     },
     pdfFile: {
-      data: Buffer,   // Data buffer to store the PDF file
-      contentType: String,   // MIME type of the file
+      data: Buffer,
+      contentType: String,  
     },
+    author:{
+      type: String,
+      required: true,
+    },
+    notesID:{
+      type: String,
+      required: true,
+    }
 });
 module.exports = mongoose.model("Notes", notesSchema);
