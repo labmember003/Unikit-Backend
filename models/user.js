@@ -11,12 +11,12 @@ const userSchema = mongoose.Schema({
         type : String,
         required : true
     },
-    img: {
-        type : String
-    },
-    token: {
+    token:{
         type : String,
         required : true
     },
+    img:{
+        type : String
+    }
 }, {timestamps : true});
 module.exports = mongoose.model("User", userSchema);
