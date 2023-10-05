@@ -29,3 +29,5 @@ const incLikeCount = async (req, res) => {
       });
     }
   };
+
+  module.exports = { incLikeCount,incDislikeCount };
