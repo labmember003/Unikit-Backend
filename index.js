@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const mongourl = require("./config")
 const userRouter = require("./routes/userRouter");
 const collegeRouter = require("./routes/collegeRouter");
+const notesRouter = require("./routes/notesRouter");
 const multer = require("multer");
  
 
@@ -27,11 +28,12 @@ const upload = multer({ storage: storage });
 
 app.use("/users", userRouter);
 app.use("/college", collegeRouter);
+app.use("/notes", notesRouter);
 app.get("/", (req, res) => {
     res.send("Uni-Kit API From Falcon Lab");
 })
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 mongoose.connect(mongourl, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => {
