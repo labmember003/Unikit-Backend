@@ -79,6 +79,8 @@ const myNotes = async (req, res) => {
     result.push({
       notesName: mynotes[i].notesName,
       pdf: mynotes[i].pdfFile,
+      likeCount: mynotes[i].likeCount,
+      dislikeCount: mynotes[i].dislikeCount,
       college: await College.find({collegeID: collegeid}),
       course: await Course.find({ courseID:courseid}),
       branch: await Branch.find({ branchID:branchid}),
