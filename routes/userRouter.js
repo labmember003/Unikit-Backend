@@ -8,7 +8,7 @@ userRouter.post("/googleOneTap", googleOneTap);
 
 userRouter.post("/signin", signin)
 
-userRouter.get("/myNotes", myNotes);
+userRouter.post("/myNotes", myNotes);
 
 
 module.exports = userRouter;
