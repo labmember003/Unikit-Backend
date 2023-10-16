@@ -10,6 +10,6 @@ const collegeRouter = express.Router();
 //collegeRouter.post("/", auth, putCollege);
 collegeRouter.get('/', collegeController.getListOfColleges);
 
-collegeRouter.get('/data', collegeController.getDataBasedOnQuery);
+collegeRouter.post('/data', collegeController.getDataBasedOnQuery);
 
 module.exports = collegeRouter;
