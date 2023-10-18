@@ -9,6 +9,10 @@ const subjectSchema = mongoose.Schema({
       type: String,
       required: true,
     },
+  imageURL: {
+      type: String,
+      required: true,
+    }
     
 });
 module.exports = mongoose.model("Subject", subjectSchema);
