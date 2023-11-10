@@ -20,6 +20,10 @@ const contentSchema = mongoose.Schema({
       type: String,
       required: true,
     },
+    subjectID:{
+      type: String,
+      required: true,
+    },
     likeCount:{
       type: Number,
       required: true,
@@ -31,4 +35,4 @@ const contentSchema = mongoose.Schema({
       default: 0
     }
 });
-module.exports = mongoose.model("Notes", contentSchema);
+module.exports = mongoose.model("Content", contentSchema);
