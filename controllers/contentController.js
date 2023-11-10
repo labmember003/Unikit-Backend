@@ -36,11 +36,11 @@ const incLikeCount = async (req, res) => {
       let results = {};
 
       if (subjectid) {
-          results = await content.findMany({ subjectID: subjectid});
+          query.subjectid = subjectid;
       }
 
       if (contentid) {
-          results = await content.find({ contentID: contentid});
+        query.contentid = contentid;
       }
       res.json(results);
   } catch (error) {
