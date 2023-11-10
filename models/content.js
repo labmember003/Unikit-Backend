@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
-const notesSchema = mongoose.Schema({
-    notesName: {
+const contentSchema = mongoose.Schema({
+    contentName: {
+      type: String,
+      required: true,
+    },
+    contentType: {
       type: String,
       required: true,
     },
@@ -12,7 +16,7 @@ const notesSchema = mongoose.Schema({
       type: String,
       required: true,
     },
-    notesID:{
+    contentID:{
       type: String,
       required: true,
     },
@@ -27,4 +31,4 @@ const notesSchema = mongoose.Schema({
       default: 0
     }
 });
-module.exports = mongoose.model("Notes", notesSchema);
+module.exports = mongoose.model("Notes", contentSchema);
