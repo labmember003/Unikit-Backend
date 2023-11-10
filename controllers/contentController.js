@@ -19,7 +19,7 @@ const incLikeCount = async (req, res) => {
     try {
       const {
           subjectid,
-          contendid
+          contentid
       } = req.query;
 
       let query = {};
