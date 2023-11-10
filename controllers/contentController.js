@@ -17,40 +17,18 @@ const incLikeCount = async (req, res) => {
 
   const showdata = async (req, res) => {
     try {
-      const {
-          subjectid,
-          contentid
-      } = req.query;
-
-      let query = {};
-
-      if (subjectid) {
-          query.collegeId = collegeId;
-      }
-
-      if (contentid) {
-        query.courseId = courseId;
-      }
-
-
+      
       let results = {};
-
-      if (subjectid) {
-          query.subjectid = subjectid;
+      if (req.query.subjectid) {
+          const subjectid = req.query.subjectid;
+          results = await Content.find({ subjectID: subjectid});
       }
 
-      if (contentid) {
-        query.contentid = contentid;
-      }
-      let results = {};
-
-      if (subjectid) {
-          results = await content.find({ subjectID: subjectid});
+      if (req.query.contentid) {
+        const contentid = req.query.contentid;
+        results = await Content.find({ contentID: contentid});
       }
 
-      if (contentid) {
-          results = await content.find({ contentID: contentid});
-      }
       res.json(results);
   } catch (error) {
       console.log(error)
