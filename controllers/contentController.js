@@ -3,7 +3,7 @@ const content = require("../models/content");
 const incLikeCount = async (req, res) => {
     
     try {
-        const contentid = req.contentid;
+        const contentid = req.query.contentid;
         const likes = await content.find({ contentID: contentid }).likeCount ;
         likes=likes+1
         const updates = await content.findOneAndUpdate({ contentID: contentid },{likeCount: likes})
@@ -40,7 +40,7 @@ const incLikeCount = async (req, res) => {
   const incDislikeCount = async (req, res) => {
     
     try {
-        const contentid = req.contentid;
+        const contentid = req.query.contentid;
         const likes = await content.find({ contentID: contentid }).dislikeCount ;
         likes=likes+1
         const updates = await content.findOneAndUpdate({ contentID: contentid },{dislikeCount: likes})
