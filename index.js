@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 const mongourl = require("./config")
 const userRouter = require("./routes/userRouter");
 const collegeRouter = require("./routes/collegeRouter");
-const notesRouter = require("./routes/notesRouter");
+const contentRouter = require("./routes/contentRouter");
 const multer = require("multer");
  
 
@@ -28,7 +28,7 @@ const upload = multer({ storage: storage });
 
 app.use("/users", userRouter);
 app.use("/college", collegeRouter);
-app.use("/notes", notesRouter);
+app.use("/content", contentRouter);
 app.get("/", (req, res) => {
     res.send("Uni-Kit API From Falcon Lab");
 })
