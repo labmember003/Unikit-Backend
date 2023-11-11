@@ -77,7 +77,7 @@ const myContent = async (req, res) => {
     branchid = contentid.slice(0,yearid.length+3)
     subjectid= contentid.slice(0,branchid.length+3)
     result.push({
-      notesName: mycontent[i].notesName,
+      notesName: mycontent[i].contentName,
       pdf: mycontent[i].pdfFile,
       likeCount: mycontent[i].likeCount,
       dislikeCount: mycontent[i].dislikeCount,
