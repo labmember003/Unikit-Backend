@@ -1,4 +1,7 @@
 const Content = require("../models/content");
+const multer = require("multer");
+const { v4: uuidv4 } = require('uuid');
+const uniqueId = uuidv4();
 
 const incLikeCount = async (req, res) => {
     
@@ -64,4 +67,39 @@ const incLikeCount = async (req, res) => {
     }
   };
 
-  module.exports = { incLikeCount,incDislikeCount, showdata };
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); 
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname); 
+  },
+});
+
+const upload = multer({ storage: storage });
+
+const handleFileUpload = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    const filePath = req.file.path;
+    const contentData = {
+      contentName: req.file.originalname,
+      pdfFile: filePath,
+      contentType: req.body.type,
+      author: req.body.token,
+      subjectID: req.body.subjectid,
+      contentID: uniqueId
+    };
+    const savedFile = await Content.create(contentData);
+    return res.status(200).json({ message: 'File uploaded successfully', savedFile });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+  module.exports = { incLikeCount,incDislikeCount, showdata , upload, handleFileUpload};
