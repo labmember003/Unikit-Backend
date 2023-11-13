@@ -70,12 +70,12 @@ const myContent = async (req, res) => {
     let i = 0;
     result=[];
     while (i < mycontent.length) {
-    contentid= String(mycontent[i].contentid)
+    contentid= String(mycontent[i].contentID)
+    subjectid= String(mycontent[i].subjectID)
     collegeid = contentid.replace(/[^a-zA-Z]/g, '')
     courseid= contentid.slice(0,collegeid.length+3)
     yearid = contentid.slice(0,courseid.length+1)
     branchid = contentid.slice(0,yearid.length+3)
-    subjectid= contentid.slice(0,branchid.length+3)
     result.push({
       notesName: mycontent[i].contentName,
       itemType: mycontent[i].contentType,
