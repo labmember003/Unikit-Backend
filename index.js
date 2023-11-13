@@ -6,25 +6,9 @@ const mongourl = require("./config")
 const userRouter = require("./routes/userRouter");
 const collegeRouter = require("./routes/collegeRouter");
 const contentRouter = require("./routes/contentRouter");
-const multer = require("multer");
  
-
-
 dotenv.config();
 app.use(express.json());
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./uploads");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
-
-const upload = multer({ storage: storage });
-
-
 
 app.use("/users", userRouter);
 app.use("/college", collegeRouter);
