@@ -4,7 +4,6 @@ const { v4: uuidv4 } = require('uuid');
 const uniqueId = uuidv4();
 const axios = require('axios');
 const fs = require('fs');
-const base64 = require('base-64');
 const passport = require("passport");
 
 const incLikeCount = async (req, res) => {
