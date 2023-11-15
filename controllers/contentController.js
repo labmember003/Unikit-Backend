@@ -2,14 +2,10 @@ const Content = require("../models/content");
 const multer = require("multer");
 const { v4: uuidv4 } = require('uuid');
 const uniqueId = uuidv4();
-//const { Octokit } = require('@octokit/rest');
 const axios = require('axios');
 const fs = require('fs');
 const base64 = require('base-64');
 const passport = require("passport");
-//const octokit = new Octokit({
-//  auth: process.env.GITHUB_TOKEN, 
-//});
 
 const incLikeCount = async (req, res) => {
     
