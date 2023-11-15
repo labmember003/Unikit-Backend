@@ -86,9 +86,7 @@ const handleFileUpload = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
-    let file = fs.readFileSync(req.file.path);
-
-  var content = file.toString('base64');
+  var content = req.file.buffer.toString('base64');
   var data = JSON.stringify({
     "message": "file uploaded",
     "content": `${content}`
