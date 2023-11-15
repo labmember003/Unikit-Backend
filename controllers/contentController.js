@@ -82,10 +82,11 @@ const handleFileUpload = async (req, res) => {
     "content": `${content}`
   
 });
+      const filename = Date.now() + '-' + req.file.originalname;
 
 var config = {
     method: 'put',
-    url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${req.file.originalname}`,
+    url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${filename}`,
     headers: {
         'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
         'Content-Type': 'application/json'
@@ -99,7 +100,7 @@ axios(config)
     });
 
     const contentData = {
-      contentName: req.file.originalname,
+      contentName: filename,
       pdfFile: config.url ,
       contentType: req.query.type,
       author: req.query.token,
