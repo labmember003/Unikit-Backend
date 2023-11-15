@@ -9,8 +9,8 @@ const contentSchema = mongoose.Schema({
       required: true,
     },
     pdfFile: {
-      data: Buffer,
-      contentType: String,  
+      type: String,  
+      required: true,
     },
     author:{
       type: String,
