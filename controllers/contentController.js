@@ -80,7 +80,6 @@ const incLikeCount = async (req, res) => {
     cb(null, 'uploads/') 
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix =  + Math.round(Math.random() * 1E9);
     cb(null, Date.now() + '-' + file.originalname);
   }
 });
@@ -96,7 +95,7 @@ const handleFileUpload = async (req, res) => {
 
   var content = file.toString('base64');
   var data = JSON.stringify({
-    "message": "txt file",
+    "message": "file uploaded",
     "content": `${content}`
 });
 
@@ -121,7 +120,7 @@ fs.unlink(req.file.path,(err) => {})
       contentName: req.file.originalname,
       pdfFile: config.url ,
       contentType: req.query.type,
-      author: req.body.token,
+      author: req.query.token,
       subjectID: req.query.subjectid,
       contentID: uniqueId
     };
