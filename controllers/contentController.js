@@ -98,7 +98,7 @@ axios(config)
     .catch(function (error) {
         console.log(error);
     });
-console.log(config.url)
+      
     const contentData = {
       contentName: filename,
       pdfFile: config.url ,
