@@ -72,7 +72,7 @@ const incLikeCount = async (req, res) => {
 
 const handleFileUpload = async (req, res) => {
   try {
-    res.send(req)
+    return res.send(req)
     if (!req.body.file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
