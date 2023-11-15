@@ -2,6 +2,14 @@ const Content = require("../models/content");
 const multer = require("multer");
 const { v4: uuidv4 } = require('uuid');
 const uniqueId = uuidv4();
+//const { Octokit } = require('@octokit/rest');
+const axios = require('axios');
+const fs = require('fs');
+const base64 = require('base-64');
+const passport = require("passport");
+//const octokit = new Octokit({
+//  auth: process.env.GITHUB_TOKEN, 
+//});
 
 const incLikeCount = async (req, res) => {
     
@@ -67,30 +75,54 @@ const incLikeCount = async (req, res) => {
     }
   };
 
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); 
+  const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/') 
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname); 
-  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix =  + Math.round(Math.random() * 1E9);
+    cb(null, Date.now() + '-' + file.originalname);
+  }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage});
 
 const handleFileUpload = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
-    const filePath = req.file.path;
+    let file = fs.readFileSync(req.file.path);
+
+  var content = file.toString('base64');
+  var data = JSON.stringify({
+    "message": "txt file",
+    "content": `${content}`
+});
+
+var config = {
+    method: 'put',
+    url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${req.file.filename}`,
+    headers: {
+        'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+        'Content-Type': 'application/json'
+    },
+    data: data
+};
+
+axios(config)
+    .catch(function (error) {
+        console.log(error);
+    });
+
+fs.unlink(req.file.path,(err) => {})
+
     const contentData = {
       contentName: req.file.originalname,
-      pdfFile: filePath,
-      contentType: req.body.type,
+      pdfFile: config.url ,
+      contentType: req.query.type,
       author: req.body.token,
-      subjectID: req.body.subjectid,
+      subjectID: req.query.subjectid,
       contentID: uniqueId
     };
     const savedFile = await Content.create(contentData);
