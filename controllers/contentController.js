@@ -70,17 +70,6 @@ const incLikeCount = async (req, res) => {
     }
   };
 
-  const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/') 
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
-});
-
-const upload = multer({ storage: storage});
-
 const handleFileUpload = async (req, res) => {
   try {
     if (!req.file) {
@@ -126,4 +115,4 @@ fs.unlink(req.file.path,(err) => {})
   }
 };
 
-  module.exports = { incLikeCount,incDislikeCount, showdata , upload, handleFileUpload};
+  module.exports = { incLikeCount,incDislikeCount, showdata , handleFileUpload};
