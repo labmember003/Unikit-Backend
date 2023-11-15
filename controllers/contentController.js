@@ -69,35 +69,34 @@ const incLikeCount = async (req, res) => {
       });
     }
   };
-
+  const storage = multer.memoryStorage();
+  const upload = multer({ storage: storage });
 const handleFileUpload = async (req, res) => {
   try {
-    return res.send(req)
-    if (!req.body.file) {
+    if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
   var content = req.file.buffer.toString('base64');
   var data = JSON.stringify({
     "message": "file uploaded",
     "content": `${content}`
+  
 });
 
 var config = {
     method: 'put',
-    url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${req.file.filename}`,
+    url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${req.file.originalname}`,
     headers: {
         'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
         'Content-Type': 'application/json'
     },
-    data: data
+    data: data,
 };
 
 axios(config)
     .catch(function (error) {
         console.log(error);
     });
-
-fs.unlink(req.file.path,(err) => {})
 
     const contentData = {
       contentName: req.file.originalname,
@@ -116,4 +115,4 @@ fs.unlink(req.file.path,(err) => {})
   }
 };
 
-  module.exports = { incLikeCount,incDislikeCount, showdata , handleFileUpload};
+  module.exports = { incLikeCount,incDislikeCount, showdata , upload,handleFileUpload};
