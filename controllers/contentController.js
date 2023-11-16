@@ -10,7 +10,7 @@ const incLikeCount = async (req, res) => {
     
     try {
         const contentid = req.query.contentid;
-        const likes = await Content.find({ contentID: contentid }).likeCount ;
+        var likes = await Content.findOne({ contentID: contentid }).likeCount ;
         likes=likes+1
         const updates = await Content.findOneAndUpdate({ contentID: contentid },{likeCount: likes})
     } catch (error) {
@@ -59,7 +59,7 @@ const incLikeCount = async (req, res) => {
     
     try {
         const contentid = req.query.contentid;
-        const likes = await Content.find({ contentID: contentid }).dislikeCount ;
+        var likes = await Content.findOne({ contentID: contentid }).dislikeCount ;
         likes=likes+1
         const updates = await Content.findOneAndUpdate({ contentID: contentid },{dislikeCount: likes})
     } catch (error) {
