@@ -30,3 +30,5 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopol
     console.error('Error connecting to MongoDB:', error);
 });
 
+module.exports = app;
+
