@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const uniqueId = uuidv4();
 const axios = require('axios');
 
+
 const incLike = async (req, res) => {
     
     try {
@@ -14,6 +15,7 @@ const incLike = async (req, res) => {
       { $push: { like: userid } },
       { new: true }
     );
+    return res.json({"contentid":updates.contentID,"count": updates.like.length,"likeList":updates.like });
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -32,6 +34,7 @@ const incLike = async (req, res) => {
       { $push: { report: userid } },
       { new: true }
     );
+    return res.json({"contentid":updates.contentID,"count": updates.report.length,"reportList":updates.report });
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -84,6 +87,7 @@ const incLike = async (req, res) => {
       { $push: { dislike: userid } },
       { new: true }
     );
+    return res.json({"contentid":updates.contentID,"count": updates.dislike.length,"reportList":updates.dislike });
     } catch (error) {
       console.log(error);
       res.status(500).json({
