@@ -22,6 +22,24 @@ const incLike = async (req, res) => {
     }
   };
 
+  const report = async (req, res) => {
+    
+    try {
+        const contentid = req.query.contentid;
+        const userid = req.query.userid; 
+    const updates = await Content.findOneAndUpdate(
+      { contentID: contentid },
+      { $push: { report: userid } },
+      { new: true }
+    );
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        message: "Something went wrong",
+      });
+    }
+  };
+
   const showdata = async (req, res) => {
     try {
       
@@ -122,4 +140,4 @@ axios(config)
   }
 };
 
-  module.exports = { incLike,incDislike, showdata , upload,handleFileUpload};
+  module.exports = { incLike,incDislike, showdata , report, upload,handleFileUpload};
