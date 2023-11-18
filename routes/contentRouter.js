@@ -3,8 +3,8 @@ const contentController=require("../controllers/contentController");
 
 const contentRouter = express.Router();
 
-contentRouter.post('/likeCount',contentController.incLikeCount);
-contentRouter.post('/dislikeCount', contentController.incDislikeCount);
+contentRouter.post('/likeCount',contentController.incLike);
+contentRouter.post('/dislikeCount', contentController.incDislike);
 contentRouter.post('/data', contentController.showdata);
 contentRouter.post('/upload', contentController.upload.single('file'),contentController.handleFileUpload);
 
