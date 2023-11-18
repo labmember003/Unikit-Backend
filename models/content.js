@@ -31,6 +31,10 @@ const contentSchema = mongoose.Schema({
     dislike:{
       type: Array,
       default: []
+    },
+    report:{
+      type: Array,
+      default: []
     }
 });
 module.exports = mongoose.model("Content", contentSchema);
