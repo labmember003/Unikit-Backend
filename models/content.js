@@ -24,15 +24,13 @@ const contentSchema = mongoose.Schema({
       type: String,
       required: true,
     },
-    likeCount:{
-      type: Number,
-      required: true,
-      default: 0
+    like:{
+      type: Array,
+      default: []
     },
-    dislikeCount:{
-      type: Number,
-      required: true,
-      default: 0
+    dislike:{
+      type: Array,
+      default: []
     }
 });
 module.exports = mongoose.model("Content", contentSchema);
