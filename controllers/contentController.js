@@ -3,16 +3,17 @@ const multer = require("multer");
 const { v4: uuidv4 } = require('uuid');
 const uniqueId = uuidv4();
 const axios = require('axios');
-const fs = require('fs');
-const passport = require("passport");
 
-const incLikeCount = async (req, res) => {
+const incLike = async (req, res) => {
     
     try {
         const contentid = req.query.contentid;
-        var likes = await Content.findOne({ contentID: contentid }).likeCount ;
-        likes=likes+1
-        const updates = await Content.findOneAndUpdate({ contentID: contentid },{likeCount: likes})
+        const userid = req.query.userid; 
+    const updates = await Content.findOneAndUpdate(
+      { contentID: contentid },
+      { $push: { like: userid } },
+      { new: true }
+    );
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -32,7 +33,7 @@ const incLikeCount = async (req, res) => {
       
       if (req.query.contentid) {
         const contentid = req.query.contentid;
-        results = await Content.findOne({ contentID: contentid});
+        results = await Content.find({ contentID: contentid});
       }
 
       if (req.query.contenttype) {
@@ -55,13 +56,16 @@ const incLikeCount = async (req, res) => {
   };
 
 
-  const incDislikeCount = async (req, res) => {
+  const incDislike = async (req, res) => {
     
     try {
-        const contentid = req.query.contentid;
-        var likes = await Content.findOne({ contentID: contentid }).dislikeCount ;
-        likes=likes+1
-        const updates = await Content.findOneAndUpdate({ contentID: contentid },{dislikeCount: likes})
+      const contentid = req.query.contentid;
+      const userid = req.query.userid; 
+    const updates = await Content.findOneAndUpdate(
+      { contentID: contentid },
+      { $push: { dislike: userid } },
+      { new: true }
+    );
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -69,8 +73,9 @@ const incLikeCount = async (req, res) => {
       });
     }
   };
-  const storage = multer.memoryStorage();
-  const upload = multer({ storage: storage });
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 const handleFileUpload = async (req, res) => {
   try {
     if (!req.file) {
@@ -82,7 +87,7 @@ const handleFileUpload = async (req, res) => {
     "content": `${content}`
   
 });
-      const filename = Date.now() + '-' + req.file.originalname;
+const filename = Date.now() + '-' + req.file.originalname;
 
 var config = {
     method: 'put',
@@ -98,7 +103,8 @@ axios(config)
     .catch(function (error) {
         console.log(error);
     });
-      
+
+
     const contentData = {
       contentName: filename,
       pdfFile: config.url ,
@@ -116,4 +122,4 @@ axios(config)
   }
 };
 
-  module.exports = { incLikeCount,incDislikeCount, showdata , upload,handleFileUpload};
+  module.exports = { incLike,incDislike, showdata , upload,handleFileUpload};
