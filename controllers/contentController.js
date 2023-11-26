@@ -172,7 +172,7 @@ const download = async (req, res) => {
     const contentid = req.body.contentid;
     const config = {
       method: 'get',
-      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${contentid}`,
+      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${contentid}.pdf`,
       headers: {
         'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
         'Content-Type': 'application/json'
@@ -204,7 +204,7 @@ const handleFileUpload = async (req, res) => {
     const githubname = uniqueId;  
     const config = {
       method: 'put',
-      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${githubname}`,
+      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${githubname}.pdf`,
       headers: {
         'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
         'Content-Type': 'application/json'
