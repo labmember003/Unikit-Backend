@@ -14,9 +14,14 @@ const incLike = async (req, res) => {
     const userid = req.query.userid;
     const content = await Content.findOne({ contentID: contentid });
 
-    if (content && content.report.includes(userid)) {
+    if (content.like.includes(userid)) {
       return res.status(400).json({ message: "Already liked" });
-    } else {
+    }
+
+    if (content.dislike.includes(userid)) {
+      return res.status(400).json({ message: "Already disliked" });
+    }
+     else {
       const updates = await Content.findOneAndUpdate(
         { contentID: contentid },
         { $push: { like: userid } },
@@ -101,9 +106,14 @@ const incDislike = async (req, res) => {
     const userid = req.query.userid;
     const content = await Content.findOne({ contentID: contentid });
 
-    if (content && content.report.includes(userid)) {
+    if (content.like.includes(userid)) {
+      return res.status(400).json({ message: "Already liked" });
+    }
+
+    if (content.dislike.includes(userid)) {
       return res.status(400).json({ message: "Already disliked" });
-    } else {
+    }
+     else {
       const updates = await Content.findOneAndUpdate(
         { contentID: contentid },
         { $push: { dislike: userid } },
