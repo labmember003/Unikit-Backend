@@ -167,6 +167,27 @@ const incDislike = async (req, res) => {
 };
 
 
+const download = async (req, res) => {
+  try {
+    const contentid = req.query.contentid;
+    const config = {
+      method: 'get',
+      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${contentid}`,
+      headers: {
+        'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+    };
+
+    const response = await axios(config);
+    const downloadUrl = response.data.download_url;
+    return res.status(200).json({ githuburl: downloadUrl });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 const handleFileUpload = async (req, res) => {
   try {
     if (!req.file) {
@@ -180,10 +201,9 @@ const handleFileUpload = async (req, res) => {
     });
 
     const filename = req.query.name;
-
-    const config = {
+    const githubname = uniqueId    
       method: 'put',
-      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${filename}`,
+      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${githubname}`,
       headers: {
         'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
         'Content-Type': 'application/json'
@@ -199,7 +219,7 @@ const handleFileUpload = async (req, res) => {
       contentType: req.query.type,
       author: req.query.token,
       subjectID: req.query.subjectid,
-      contentID: uniqueId
+      contentID: githubname
     };
 
     const savedFile = await Content.create(contentData);
