@@ -179,7 +179,7 @@ const handleFileUpload = async (req, res) => {
       content: `${content}`
     });
 
-    const filename = Date.now() + '-' + req.file.originalname;
+    const filename = req.file.originalname;
 
     const config = {
       method: 'put',
