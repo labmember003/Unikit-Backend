@@ -14,23 +14,39 @@ const incLike = async (req, res) => {
     const userid = req.query.userid;
     const content = await Content.findOne({ contentID: contentid });
 
-    if (content.like.includes(userid)) {
-      return res.status(400).json({ message: "Already liked" });
+    if (!content) {
+      return res.status(404).json({ message: "Content not found" });
     }
+    const isDisliked = content.dislike.includes(userid);
+    const isLiked = content.like.includes(userid);
+    if (isDisliked) {
+      const updates = await Content.findOneAndUpdate(
+        { contentID: contentid },
+        {
+          $pull: { dislike: userid },
+          $push: { like: userid },
+        },
+        { new: true }
+      );
 
-    if (content.dislike.includes(userid)) {
-      return res.status(400).json({ message: "Already disliked" });
-    }
-     else {
+      return res.json({
+        contentid: updates.contentID,
+        count: updates.like.length,
+        likeList: updates.like,
+      });
+    } else if (isLiked) {
+      return res.status(400).json({ message: "Already liked" });
+    } else {
       const updates = await Content.findOneAndUpdate(
         { contentID: contentid },
         { $push: { like: userid } },
         { new: true }
       );
+
       return res.json({
         contentid: updates.contentID,
         count: updates.like.length,
-        likeList: updates.like
+        likeList: updates.like,
       });
     }
   } catch (error) {
@@ -38,6 +54,7 @@ const incLike = async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
+
 
 const report = async (req, res) => {
   try {
@@ -106,23 +123,41 @@ const incDislike = async (req, res) => {
     const userid = req.query.userid;
     const content = await Content.findOne({ contentID: contentid });
 
-    if (content.like.includes(userid)) {
-      return res.status(400).json({ message: "Already liked" });
+    if (!content) {
+      return res.status(404).json({ message: "Content not found" });
     }
 
-    if (content.dislike.includes(userid)) {
+    const isLiked = content.like.includes(userid);
+    const isDisliked = content.dislike.includes(userid);
+
+    if (isLiked) {
+      const updates = await Content.findOneAndUpdate(
+        { contentID: contentid },
+        {
+          $pull: { like: userid },
+          $push: { dislike: userid },
+        },
+        { new: true }
+      );
+
+      return res.json({
+        contentid: updates.contentID,
+        count: updates.dislike.length,
+        dislikeList: updates.dislike,
+      });
+    } else if (isDisliked) {
       return res.status(400).json({ message: "Already disliked" });
-    }
-     else {
+    } else {
       const updates = await Content.findOneAndUpdate(
         { contentID: contentid },
         { $push: { dislike: userid } },
         { new: true }
       );
+
       return res.json({
         contentid: updates.contentID,
         count: updates.dislike.length,
-        reportList: updates.dislike
+        reportList: updates.dislike,
       });
     }
   } catch (error) {
@@ -130,6 +165,7 @@ const incDislike = async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
+
 
 const handleFileUpload = async (req, res) => {
   try {
