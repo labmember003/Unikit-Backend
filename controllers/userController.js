@@ -65,7 +65,7 @@ const signin = async (req, res) => {
 
 const myContent = async (req, res) => {
   try {
-    const token = req.query.token;
+    const token = req.body.token;
     const mycontent = await content.find({ author: token });
     const result = [];
 
