@@ -65,39 +65,47 @@ const signin = async (req, res) => {
 
 const myContent = async (req, res) => {
   try {
-    var token = req.query.token;
-    const mycontent = await content.find({author: token});
-    let i = 0;
-    result=[];
-    while (i < mycontent.length) {
-    contentid= String(mycontent[i].contentID)
-    subjectid= String(mycontent[i].subjectID)
-    collegeid = contentid.replace(/[^a-zA-Z]/g, '')
-    courseid= contentid.slice(0,collegeid.length+3)
-    yearid = contentid.slice(0,courseid.length+1)
-    branchid = contentid.slice(0,yearid.length+3)
-    result.push({
-      notesName: mycontent[i].contentName,
-      itemType: mycontent[i].contentType,
-      pdf: mycontent[i].pdfFile,
-      likeCount: mycontent[i].likeCount,
-      dislikeCount: mycontent[i].dislikeCount,
-      college: await College.find({collegeID: collegeid}),
-      course: await Course.find({ courseID:courseid}),
-      branch: await Branch.find({ branchID:branchid}),
-      year: await numofYears.find({ yearID:yearid}),
-      subject: await Subject.find({ subjectID:subjectid})
-  })
-    
-    i++;
-}
-    
+    const token = req.query.token;
+    const mycontent = await content.find({ author: token });
+    const result = [];
+
+    for (const contentItem of mycontent) {
+      const contentid = String(contentItem.contentID);
+      const subjectid = String(contentItem.subjectID);
+      const collegeid = contentid.replace(/[^a-zA-Z]/g, '');
+      const courseid = contentid.slice(0, collegeid.length + 3);
+      const yearid = contentid.slice(0, courseid.length + 1);
+      const branchid = contentid.slice(0, yearid.length + 3);
+
+      const [college, course, branch, year, subject] = await Promise.all([
+        College.find({ collegeID: collegeid }),
+        Course.find({ courseID: courseid }),
+        Branch.find({ branchID: branchid }),
+        numofYears.find({ yearID: yearid }),
+        Subject.find({ subjectID: subjectid }),
+      ]);
+
+      result.push({
+        notesName: contentItem.contentName,
+        itemType: contentItem.contentType,
+        pdf: contentItem.pdfFile,
+        likeCount: contentItem.likeCount,
+        dislikeCount: contentItem.dislikeCount,
+        college,
+        course,
+        branch,
+        year,
+        subject,
+      });
+    }
+
     res.json(result);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ message: 'Internal server error' });
   }
-}
+};
+
 
 
 const googleOneTap = async (req, res) => {
