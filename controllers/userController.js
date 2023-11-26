@@ -72,10 +72,10 @@ const myContent = async (req, res) => {
     for (const contentItem of mycontent) {
       const contentid = String(contentItem.contentID);
       const subjectid = String(contentItem.subjectID);
-      const collegeid = contentid.replace(/[^a-zA-Z]/g, '');
-      const courseid = contentid.slice(0, collegeid.length + 3);
-      const yearid = contentid.slice(0, courseid.length + 1);
-      const branchid = contentid.slice(0, yearid.length + 3);
+      const collegeid = subjectid.replace(/[^a-zA-Z]/g, '');
+      const courseid = subjectid.slice(0, collegeid.length + 3);
+      const yearid = subjectid.slice(0, courseid.length + 1);
+      const branchid = subjectid.slice(0, yearid.length + 3);
 
       const [college, course, branch, year, subject] = await Promise.all([
         College.find({ collegeID: collegeid }),
@@ -86,6 +86,7 @@ const myContent = async (req, res) => {
       ]);
 
       result.push({
+        contentID: contentItem.contentID,
         notesName: contentItem.contentName,
         itemType: contentItem.contentType,
         pdf: contentItem.pdfFile,
