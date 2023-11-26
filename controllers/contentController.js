@@ -169,7 +169,7 @@ const incDislike = async (req, res) => {
 
 const download = async (req, res) => {
   try {
-    const contentid = req.query.contentid;
+    const contentid = req.body.contentid;
     const config = {
       method: 'get',
       url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${contentid}`,
