@@ -89,6 +89,8 @@ const myContent = async (req, res) => {
         contentID: contentItem.contentID,
         notesName: contentItem.contentName,
         itemType: contentItem.contentType,
+        like: contentItem.like,
+        dislike: contentItem.dislike,
         pdf: contentItem.pdfFile,
         likeCount: contentItem.likeCount,
         dislikeCount: contentItem.dislikeCount,
