@@ -239,6 +239,7 @@ module.exports = {
   incDislike,
   showdata,
   report,
+  download,
   upload,
   handleFileUpload
 };
