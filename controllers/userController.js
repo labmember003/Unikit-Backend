@@ -147,6 +147,37 @@ const googleOneTap = async (req, res) => {
   }
 };
 
-module.exports = { signup, signin, googleOneTap, myContent };
+const coins = async (req, res) => {
+  try{
+    const userid = req.body.token;
+    const mode = req.body.mode;
+    var amount = Int(req.body.amount);
 
+    if ( mode =='dec'){
+      var amount = -Math.abs(amount);
+    }
+
+    const updated = await userModel.update(
+      { "token": userid },
+      { $inc: { "coins": amount },  $max: { "coins": 0 } }
+   );
+    return res.status(201).json(updated);
+}catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const showdata = async (req, res) => {
+  try{
+    const userid = req.body.token;
+    const user = await userModel.findOne({ "token": userid } );
+    return res.status(201).json(user);
+}catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports = { signup, signin, googleOneTap, myContent, showdata, coins };
 // 11:05
