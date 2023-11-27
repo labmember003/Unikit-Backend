@@ -155,12 +155,17 @@ const coins = async (req, res) => {
     const userid = req.body.token;
     const mode = req.body.mode;
     let amount = Number(req.body.amount);
+
     if (mode === 'dec') {
+      const user = await userModel.findOne({ "token": userid });
+      if (user.coins + amount < 0) {
+        return res.status(400).json({ message: 'Coins cannot go below 0' });
+      }
       amount = -Math.abs(amount);
     }
     const updated = await userModel.updateOne(
       { "token": userid },
-      { $inc: { "coins": amount }, $max: { "coins": 0 } }
+      { $inc: { "coins": amount } }
     );
     if (updated.nModified === 0) {
       return res.status(404).json({ message: 'User not found or no changes made' });
