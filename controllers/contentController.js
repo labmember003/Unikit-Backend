@@ -166,7 +166,6 @@ const incDislike = async (req, res) => {
   }
 };
 
-
 const download = async (req, res) => {
   try {
     const contentid = req.body.contentid;
@@ -200,13 +199,14 @@ const handleFileUpload = async (req, res) => {
     const content = req.file.buffer.toString('base64');
     const data = JSON.stringify({
       message: "file uploaded",
-      content: content
+      content: `${content}`
     });
 
     const filename = req.query.name;
-    const githubname = uniqueId;    
+    const githubname = uniqueId;  
+
     const config = {
-      method: 'post',
+      method: 'put',
       url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${githubname}.pdf`,
       headers: {
         'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
@@ -215,11 +215,7 @@ const handleFileUpload = async (req, res) => {
       data: data
     };
 
-    const response = await axios(config);
-    if (response.status !== 200) {
-    throw new Error(`GitHub API request failed with status ${response.status}`);
-  }
-
+    await axios(config);
 
     const contentData = {
       contentName: filename,
