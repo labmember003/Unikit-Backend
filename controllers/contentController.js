@@ -217,7 +217,7 @@ const handleFileUpload = async (req, res) => {
       }),
       Content.create({
         contentName: filename,
-        pdfFile: githubApiUrl,
+        pdfFile: config.url,
         contentType: req.query.type,
         author: req.query.token,
         subjectID: req.query.subjectid,
