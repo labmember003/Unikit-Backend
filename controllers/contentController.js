@@ -204,9 +204,7 @@ const handleFileUpload = async (req, res) => {
 
     const filename = req.query.name;
     const githubname = uniqueId;  
-
-    const [githubResponse, savedFile] = await Promise.all([
-      axios({
+    const config = {
         method: 'put',
         url:`https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${githubname}.pdf`,
         headers: {
@@ -214,7 +212,10 @@ const handleFileUpload = async (req, res) => {
           'Content-Type': 'application/json',
         },
         data: data,
-      }),
+      }
+
+    const [githubResponse, savedFile] = await Promise.all([
+      axios(config),
       Content.create({
         contentName: filename,
         pdfFile: config.url,
