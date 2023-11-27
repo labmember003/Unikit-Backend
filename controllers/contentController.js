@@ -207,7 +207,7 @@ const handleFileUpload = async (req, res) => {
     const githubname = uniqueId;    
     const config = {
       method: 'post',
-      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${githubname}.pdf`,
+      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${githubname}`,
       headers: {
         'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
         'Content-Type': 'application/json'
