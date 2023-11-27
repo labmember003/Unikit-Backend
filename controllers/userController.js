@@ -148,36 +148,48 @@ const googleOneTap = async (req, res) => {
 };
 
 const coins = async (req, res) => {
-  try{
+  try {
+    if (!req.body.token || !req.body.amount) {
+      return res.status(400).json({ message: 'Token and amount are required in the request body' });
+    }
     const userid = req.body.token;
     const mode = req.body.mode;
-    var amount = Int(req.body.amount);
-
-    if ( mode =='dec'){
-      var amount = -Math.abs(amount);
+    let amount = Number(req.body.amount);
+    if (mode === 'dec') {
+      amount = -Math.abs(amount);
     }
-
-    const updated = await userModel.update(
+    const updated = await userModel.updateOne(
       { "token": userid },
-      { $inc: { "coins": amount },  $max: { "coins": 0 } }
-   );
-    return res.status(201).json(updated);
-}catch (error) {
-    console.log(error);
-    res.status(500).json({ message: 'Internal server error' });
+      { $inc: { "coins": amount }, $max: { "coins": 0 } }
+    );
+    if (updated.nModified === 0) {
+      return res.status(404).json({ message: 'User not found or no changes made' });
+    }
+    return res.status(200).json({ message: 'Coins updated successfully' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
 const showdata = async (req, res) => {
-  try{
+  try {
+    if (!req.body.token) {
+      return res.status(400).json({ message: 'Token is required in the request body' });
+    }
+
     const userid = req.body.token;
-    const user = await userModel.findOne({ "token": userid } );
-    return res.status(201).json(user);
-}catch (error) {
-    console.log(error);
-    res.status(500).json({ message: 'Internal server error' });
+    const user = await userModel.findOne({ "token": userid });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 module.exports = { signup, signin, googleOneTap, myContent, showdata, coins };
 // 11:05
