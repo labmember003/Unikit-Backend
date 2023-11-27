@@ -1,6 +1,10 @@
 const express = require("express");
-const { signin, signup, googleOneTap, myContent } = require("../controllers/userController");
+const { signup, signin, googleOneTap, myContent, showdata, coins } = require("../controllers/userController");
 const userRouter = express.Router();
+
+userRouter.post("/", showdata)
+
+userRouter.post("/coins", coins)
 
 userRouter.post("/signup", signup);
 
