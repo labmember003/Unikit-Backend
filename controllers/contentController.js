@@ -199,39 +199,40 @@ const handleFileUpload = async (req, res) => {
     const content = req.file.buffer.toString('base64');
     const data = JSON.stringify({
       message: "file uploaded",
-      content: `${content}`
+      content: content
     });
 
     const filename = req.query.name;
     const githubname = uniqueId;  
 
-    const config = {
-      method: 'put',
-      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${githubname}.pdf`,
-      headers: {
-        'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      data: data
-    };
+    const [githubResponse, savedFile] = await Promise.all([
+      axios({
+        method: 'put',
+        url:`https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${githubname}.pdf`,
+        headers: {
+          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        data: data,
+      }),
+      Content.create({
+        contentName: filename,
+        pdfFile: githubApiUrl,
+        contentType: req.query.type,
+        author: req.query.token,
+        subjectID: req.query.subjectid,
+        contentID: githubname,
+      }),
+    ]);
 
-    await axios(config);
+    if (githubResponse.status !== 201) {
+      throw new Error(`GitHub API request failed with status ${githubResponse.status}`);
+    }
 
-    const contentData = {
-      contentName: filename,
-      pdfFile: config.url,
-      contentType: req.query.type,
-      author: req.query.token,
-      subjectID: req.query.subjectid,
-      contentID: githubname
-    };
-
-    const savedFile = await Content.create(contentData);
     return res.status(200).json({
       message: 'File uploaded successfully',
-      savedFile
+      savedFile,
     });
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
