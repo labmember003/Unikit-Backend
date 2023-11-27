@@ -180,6 +180,9 @@ const download = async (req, res) => {
     };
 
     const response = await axios(config);
+    if (response.status === 404) {
+      return res.status(404).json({ message: 'File not found on GitHub repo' });
+    }
     const downloadUrl = response.data.download_url;
     return res.status(200).json({ githuburl: downloadUrl });
   } catch (error) {
