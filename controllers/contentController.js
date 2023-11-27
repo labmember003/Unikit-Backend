@@ -200,14 +200,14 @@ const handleFileUpload = async (req, res) => {
     const content = req.file.buffer.toString('base64');
     const data = JSON.stringify({
       message: "file uploaded",
-      content: `${content}`
+      content: content
     });
 
     const filename = req.query.name;
     const githubname = uniqueId;    
     const config = {
       method: 'post',
-      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${githubname}`,
+      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${githubname}.pdf`,
       headers: {
         'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
         'Content-Type': 'application/json'
@@ -215,7 +215,11 @@ const handleFileUpload = async (req, res) => {
       data: data
     };
 
-    await axios(config);
+    const response = await axios(config);
+    if (response.status !== 200) {
+    throw new Error(`GitHub API request failed with status ${response.status}`);
+  }
+
 
     const contentData = {
       contentName: filename,
