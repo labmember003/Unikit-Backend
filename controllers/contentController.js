@@ -3,8 +3,6 @@ const multer = require("multer");
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 
-const uniqueId = uuidv4();
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -203,7 +201,7 @@ const handleFileUpload = async (req, res) => {
     });
 
     const filename = req.query.name;
-    const githubname = uniqueId;  
+    const githubname = uuidv4();  
     const config = {
         method: 'put',
         url:`https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${githubname}.pdf`,
