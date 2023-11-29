@@ -101,8 +101,12 @@ const myContent = async (req, res) => {
         subject,
       });
     }
-
-    res.json(result);
+if (result!=[]){
+    return res.json(result);
+}
+    else{
+      return res.json({"message":"No Content Found"})
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Internal server error' });
