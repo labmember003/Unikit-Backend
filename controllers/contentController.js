@@ -200,7 +200,7 @@ const handleFileUpload = async (req, res) => {
       content: content
     });
 
-    const filename = req.query.name;
+    const filename = req.file.originalname;
     const githubname = uuidv4();  
     const config = {
         method: 'put',
