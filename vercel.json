@@ -11,9 +11,5 @@
       "src": "/(.*)",
       "dest": "/"
     }
-  ],"functions": {
-    "controllers/**/*": {
-      "maxDuration": 30
-    }
-  }
+  ]
 }
