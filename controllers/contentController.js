@@ -229,12 +229,11 @@ const handleFileUpload = async (req, res) => {
     }
 
     return res.status(200).json({
-      message: 'File uploaded successfully',
-      savedFile,
+      message: 'success',
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: 'failure' });
   }
 };
 
