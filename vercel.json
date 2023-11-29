@@ -13,6 +13,9 @@
     }
   ],
   "functions": {
-    "maxDuration": 30
+    "controllers/*.js": {
+      "maxDuration": 30 
+    }
+    
   }
 }
