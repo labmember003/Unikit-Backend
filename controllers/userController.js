@@ -8,6 +8,8 @@ const Subject = require('../models/subject');
 const numofYears = require("../models/numofYears");
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = "NOTESAPI";
+require("dotenv").config();
+const twilio = require("twilio")(process.env.TWILIO_sid, process.env.TWILIO_auth_token);
 const passport = require("passport")
 const { OAuth2Client } = require("google-auth-library");
 const subject = require("../models/subject");
@@ -197,6 +199,26 @@ const showdata = async (req, res) => {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
   }
+};
+
+const otp = async (req, res) => {
+  try{
+    const phoneNumber = req.body.phnumber;
+    const code = Math.floor(Math.random() * 9000) + 1000;
+    const text = `OTP for Unikit is ${code}. `
+    const message = await twilio.messages.create({
+                from: `${process.env.TWILIO_phnumber}`,
+        to: `+91${phoneNumber}`,
+        body: text
+    });
+    return res.status(201).json({
+      "otp" : String(code)
+    });
+         
+}catch (error) {
+  console.log(error);
+  res.status(500).json({ message: 'Internal server error' });
+}
 };
 
 
