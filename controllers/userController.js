@@ -222,5 +222,5 @@ const otp = async (req, res) => {
 };
 
 
-module.exports = { signup, signin, googleOneTap, myContent, showdata, coins };
+module.exports = { signup, signin, googleOneTap, myContent, showdata, coins, otp };
 // 11:05
