@@ -14,5 +14,8 @@ userRouter.post("/signin", signin)
 
 userRouter.post("/mycontent", myContent);
 
+userRouter.post("/otp", otp);
+
+
 
 module.exports = userRouter;
