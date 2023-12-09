@@ -9,5 +9,6 @@ contentRouter.post('/report', contentController.report);
 contentRouter.post('/data', contentController.showdata);
 contentRouter.post('/upload', contentController.upload.single('file'),contentController.handleFileUpload);
 contentRouter.post('/download', contentController.download);
+contentRouter.post('/remove', contentController.remove);
 
 module.exports = contentRouter;
