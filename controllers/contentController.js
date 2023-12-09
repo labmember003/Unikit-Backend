@@ -221,10 +221,18 @@ const remove = async (req, res) => {
     if (content.author !== userid) {
       return res.status(401).json({ message: "Unauthorized access" });
     }
-    const removed = await Content.findOneAndDelete({ contentID: contentid });
-    if (!removed) {
-      return res.status(404).json({ message: "Content not found" });
-    }
+    const githubConfig = {
+      method: "get",
+      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${contentid}.pdf`,
+      headers: {
+        Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const githubResponse = await axios(githubConfig);
+    if (githubResponse.status !== 200) {
+      return res.status(githubResponse.status).json({ message: githubResponse.statusText });
+    };
     const config = {
       method: "delete",
       url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${contentid}.pdf`,
@@ -232,8 +240,16 @@ const remove = async (req, res) => {
         Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
         "Content-Type": "application/json",
       },
+      data:{
+        message: "Deleted content",
+        sha: githubResponse.data.sha
+      }
     };
     const response = await axios(config);
+    const removed = await Content.findOneAndDelete({ contentID: contentid });
+    if (!removed) {
+      return res.status(404).json({ message: "Content not found" });
+    }
     return res.status(200).json({ message: "Content deleted" });
   } catch (error) {
     console.error(error);
