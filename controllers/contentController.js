@@ -33,7 +33,18 @@ const incLike = async (req, res) => {
         likeList: updates.like,
       });
     } else if (isLiked) {
-      return res.status(400).json({ message: "Already liked" });
+      const updates = await Content.findOneAndUpdate(
+        { contentID: contentid },
+        {
+          $pull: { like: userid },
+        },
+        { new: true }
+      );
+      return res.json({
+        contentid: updates.contentID,
+        count: updates.like.length,
+        likeList: updates.like,
+      });
     } else {
       const updates = await Content.findOneAndUpdate(
         { contentID: contentid },
@@ -144,7 +155,18 @@ const incDislike = async (req, res) => {
         dislikeList: updates.dislike,
       });
     } else if (isDisliked) {
-      return res.status(400).json({ message: "Already disliked" });
+      const updates = await Content.findOneAndUpdate(
+        { contentID: contentid },
+        {
+          $pull: { dislike: userid },
+        },
+        { new: true }
+      );
+      return res.json({
+        contentid: updates.contentID,
+        count: updates.dislike.length,
+        likeList: updates.dislike,
+      });
     } else {
       const updates = await Content.findOneAndUpdate(
         { contentID: contentid },
