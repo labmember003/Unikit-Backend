@@ -203,6 +203,15 @@ const remove = async (req, res) => {
     if (!removed) {
       return res.status(404).json({ message: "Content not found" });
     }
+    const config = {
+      method: "delete",
+      url: `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${contentid}.pdf`,
+      headers: {
+        Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios(config);
     return res.status(200).json({ message: "Content deleted" });
   } catch (error) {
     console.error(error);
