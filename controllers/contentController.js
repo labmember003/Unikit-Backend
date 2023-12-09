@@ -188,6 +188,28 @@ const download = async (req, res) => {
   }
 };
 
+const remove = async (req, res) => {
+  try {
+    const contentid = req.body.contentid;
+    const userid = req.body.token;
+    const content = await Content.findOne({ contentID: contentid });
+    if (!content) {
+      return res.status(404).json({ message: "Content not found" });
+    }
+    if (content.author !== userid) {
+      return res.status(401).json({ message: "Unauthorized access" });
+    }
+    const removed = await Content.findOneAndDelete({ contentID: contentid });
+    if (!removed) {
+      return res.status(404).json({ message: "Content not found" });
+    }
+    return res.status(200).json({ message: "Content deleted" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "failure" });
+  }
+};
+
 const handleFileUpload = async (req, res) => {
   try {
     if (!req.file) {
@@ -244,5 +266,6 @@ module.exports = {
   report,
   download,
   upload,
-  handleFileUpload
+  handleFileUpload,
+  remove
 };
