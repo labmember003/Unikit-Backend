@@ -1,10 +1,12 @@
 const express = require("express");
 const app = express();
+const fs = require('fs');
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const userRouter = require("./routes/userRouter");
 const collegeRouter = require("./routes/collegeRouter");
 const contentRouter = require("./routes/contentRouter");
+const appRouter = require("./routes/appRouter");
  
 dotenv.config();
 
@@ -14,6 +16,7 @@ app.use(express.json());
 app.use("/users", userRouter);
 app.use("/college", collegeRouter);
 app.use("/content", contentRouter);
+app.use("/.well-known", appRouter);
 app.get("/", (req, res) => {
     res.send("Uni-Kit API From Falcon Lab");
 })
