@@ -11,7 +11,7 @@ const assetlinks =[{
   }
   }];
 
-appRouter.get('/assetlink.json', (req, res) => {
+appRouter.get('/assetlinks.json', (req, res) => {
     res.json(assetlinks);
 });
 
