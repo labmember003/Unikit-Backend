@@ -11,6 +11,8 @@ const assetlinks =[{
   }
   }];
 
-appRouter.post('/assetlink.json', (req, res) => {
+appRouter.get('/assetlink.json', (req, res) => {
     res.json(assetlinks);
 });
+
+module.exports = appRouter;
