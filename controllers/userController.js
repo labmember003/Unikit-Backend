@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const College = require('../models/college');
 const Course = require('../models/courseSchema');
 const Branch = require('../models/branch');
+const Transaction = require('../models/trans');
 const Subject = require('../models/subject');
 const numofYears = require("../models/numofYears");
 const jwt = require("jsonwebtoken");
@@ -194,6 +195,7 @@ const showdata = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+    user.trans = await Transaction.find({ "token": userid });
     return res.status(200).json(user);
   } catch (error) {
     console.error(error);
