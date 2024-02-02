@@ -1,6 +1,6 @@
 const userModel = require("../models/user");
 const content = require("../models/content");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const College = require('../models/college');
 const Course = require('../models/courseSchema');
 const Branch = require('../models/branch');
@@ -24,7 +24,7 @@ const signup = async (req, res) => {
         message: "User already exists",
       });
     }
-    const hashedpassword = await bcrypt.hash(password, 10);
+    const hashedpassword = await bcrypt.hashSync(password, 10);
     const result = await userModel.create({
       username: username,
       email: email,
@@ -49,7 +49,7 @@ const signin = async (req, res) => {
         message: "User Not Found",
       });
     }
-    const matchPassword = await bcrypt.compare(password, existingUser.password);
+    const matchPassword = await bcrypt.compareSync(password, existingUser.password);
     if (!matchPassword) {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
